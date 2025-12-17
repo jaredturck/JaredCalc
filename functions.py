@@ -35,6 +35,28 @@ function_list = {
     "invnorm": _normal.inv_cdf,
 }
 
+constants = {
+    "zero": 0.0,
+    "one": 1.0,
+    "two": 2.0,
+    "three": 3.0,
+    "four": 4.0,
+    "ten": 10.0,
+    "half": 0.5,
+    "onePointOne": 1.1,
+    "pi": math.pi,
+    "e": math.e,
+    "tau": math.tau,
+    "inf": math.inf,
+    "nan": math.nan,
+    "ln1_1": math.log(1.1),
+    "ln2": math.log(2.0),
+    "ln10": math.log(10.0),
+    "sqrt2": math.sqrt(2.0),
+    "sqrt_2pi": math.sqrt(2.0 * math.pi),
+    "imag_i": 1j,
+}
+
 symbols = '''
 +
 -

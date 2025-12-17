@@ -1,5 +1,5 @@
 import re, math
-from functions import function_list
+from functions import function_list, constants
 
 class Parse:
     def __init__(self, expression):
@@ -29,19 +29,6 @@ class Parse:
             node = ('symbol', op, node, func())
         return node
     
-    def _const(self, t):
-        ''' Check for mathematical constants '''
-        if t == 'pi':
-            return ('num', math.pi)
-        if t == 'e':
-            return ('num', math.e)
-        if t == 'tau':
-            return ('num', math.tau)
-        if t == 'inf':
-            return ('num', math.inf)
-        if t == 'nan':
-            return ('num', math.nan)
-    
     def expr(self):
         ''' Parse add and subtract '''
         return self._exp(('+', '-'), self.term)
@@ -66,9 +53,8 @@ class Parse:
             return ('function', t, arg)
         
         # check for constant
-        v = self._const(t)
-        if v:
-            return v
+        if t in constants:
+            return ('num', constants[t])
         
         # must be a number
         if '.' in t:
