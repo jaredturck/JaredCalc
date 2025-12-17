@@ -1,4 +1,4 @@
-import cmath
+import cmath, math
 import statistics
 import operator
 
@@ -11,30 +11,29 @@ function_list = {
     "Im": operator.attrgetter("imag"),
     "Re": operator.attrgetter("real"),
     "sgn": lambda x: 0 if x == 0 else (1 if x > 0 else -1),
-    "sin": cmath.sin,
-    "cosec": lambda x: 1 / cmath.sin(x),
-    "csc": lambda x: 1 / cmath.sin(x),
-    "cos": cmath.cos,
-    "sec": lambda x: 1 / cmath.cos(x),
-    "tan": cmath.tan,
-    "cot": lambda x: 1 / cmath.tan(x),
-    "sinh": cmath.sinh,
-    "cosh": cmath.cosh,
-    "tanh": cmath.tanh,
-    "asin": cmath.asin,
-    "arcsin": cmath.asin,
-    "acos": cmath.acos,
-    "arccos": cmath.acos,
-    "atan": cmath.atan,
-    "arctan": cmath.atan,
-    "sqrt": cmath.sqrt,
-    "ln": cmath.log,
-    "lg": cmath.log10,
+    "sin": math.sin,
+    "cosec": lambda x: 1 / math.sin(x),
+    "csc": lambda x: 1 / math.sin(x),
+    "cos": math.cos,
+    "sec": lambda x: 1 / math.cos(x),
+    "tan": math.tan,
+    "cot": lambda x: 1 / math.tan(x),
+    "sinh": math.sinh,
+    "cosh": math.cosh,
+    "tanh": math.tanh,
+    "asin": math.asin,
+    "arcsin": math.asin,
+    "acos": math.acos,
+    "arccos": math.acos,
+    "atan": math.atan,
+    "arctan": math.atan,
+    "sqrt": math.sqrt,
+    "ln": math.log,
+    "lg": math.log10,
     "normcdf": _normal.cdf,
     "normpdf": _normal.pdf,
     "invnorm": _normal.inv_cdf,
 }
-
 
 symbols = '''
 +

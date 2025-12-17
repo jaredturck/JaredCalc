@@ -1,4 +1,5 @@
 import re, math
+from functions import function_list
 
 class Parse:
     def __init__(self, expression):
@@ -57,6 +58,13 @@ class Parse:
             self.eat()
             return n
         
+        # check for function
+        if t in function_list:
+            self.eat()
+            arg = self.expr()
+            self.eat()
+            return ('function', t, arg)
+        
         # check for constant
         v = self._const(t)
         if v:
@@ -73,6 +81,10 @@ class Parse:
             node = self.ast
         if node[0] == 'num':
             return node[1]
+        if node[0] == 'function':
+            _, name, arg = node
+            val = self.evaulate(arg)
+            return function_list[name](val)
         
         _, op, left, right = node
         a = self.evaulate(left)
