@@ -1,4 +1,4 @@
-import re, math
+import re, decimal
 from functions import function_list, constants
 
 class Parse:
@@ -58,10 +58,10 @@ class Parse:
         
         # must be a number
         if '.' in t:
-            return ('num', float(t))
+            return ('num', decimal.Decimal(t))
         return ('num', int(t))
     
-    def evaulate(self, node=None):
+    def evaluate(self, node=None):
         ''' Evaluate the AST recursively '''
         if not node:
             node = self.ast
@@ -69,12 +69,12 @@ class Parse:
             return node[1]
         if node[0] == 'function':
             _, name, arg = node
-            val = self.evaulate(arg)
+            val = self.evaluate(arg)
             return function_list[name](val)
         
         _, op, left, right = node
-        a = self.evaulate(left)
-        b = self.evaulate(right)
+        a = self.evaluate(left)
+        b = self.evaluate(right)
 
         if op == '+':
             return a + b
@@ -86,7 +86,12 @@ class Parse:
             return a / b
     
     def __str__(self):
-        return str(self.evaulate())
+        v = self.evaluate()
+        if isinstance(v, float):
+            return format(decimal.Decimal(v).normalize(), "f")
+        if isinstance(v, decimal.Decimal):
+            return format(v.normalize(), "f")
+        return str(v)
 
 if __name__ == '__main__':
     while True:
