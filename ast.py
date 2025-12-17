@@ -1,10 +1,14 @@
-import re
+import re, math
 
 class Parse:
     def __init__(self, expression):
-        self.tokens = re.findall(r'\d+|[+*/()-]', expression)
+        self.tokens = self.tokenize(expression)
         self.i = 0
         self.ast = self.expr()
+    
+    def tokenize(self, expression):
+        ''' Tokenize the input expression into numbers, operators, and parentheses '''
+        return re.findall(r'\d+\.\d+|\d+|[a-zA-Z]+|[+*/()-]', expression)
     
     def peek(self):
         ''' Look at the next token without consuming it '''
@@ -24,6 +28,19 @@ class Parse:
             node = ('symbol', op, node, func())
         return node
     
+    def _const(self, t):
+        ''' Check for mathematical constants '''
+        if t == 'pi':
+            return ('num', math.pi)
+        if t == 'e':
+            return ('num', math.e)
+        if t == 'tau':
+            return ('num', math.tau)
+        if t == 'inf':
+            return ('num', math.inf)
+        if t == 'nan':
+            return ('num', math.nan)
+    
     def expr(self):
         ''' Parse add and subtract '''
         return self._exp(('+', '-'), self.term)
@@ -39,6 +56,15 @@ class Parse:
             n = self.expr()
             self.eat()
             return n
+        
+        # check for constant
+        v = self._const(t)
+        if v:
+            return v
+        
+        # must be a number
+        if '.' in t:
+            return ('num', float(t))
         return ('num', int(t))
     
     def evaulate(self, node=None):
@@ -64,6 +90,9 @@ class Parse:
     def __str__(self):
         return str(self.evaulate())
 
-t = Parse('3 * (4 + 5 + (6 / 7))')
-print(t.ast)
-print(t)
+if __name__ == '__main__':
+    while True:
+        expression = input('> ')
+        t = Parse(expression)
+        print(t.ast)
+        print(t)
