@@ -1,35 +1,40 @@
-import math
+import cmath
+import statistics
+import operator
 
-topList = {
-    'abs': op.absolute,
-    'arg': op.argument,
-    'conj': op.conjugate,
-    'Im': op.imPart,
-    'Re': op.realPart,
-    'sgn': op.signum,
-    'sin': op.sin,
-    'cosec': op.csc,
-    'csc': op.csc,
-    'cos': math.cos,
-    'sec': op.sec,
-    'tan': op.tan,
-    'cot': op.cot,
-    'sinh': op.sinh,
-    'cosh': op.cosh,
-    'tanh': op.tanh,
-    'asin': op.arcsin,
-    'arcsin': op.arcsin,
-    'acos': op.arccos,
-    'arccos': op.arccos,
-    'atan': op.arctan,
-    'arctan': op.arctan,
-    'sqrt': op.sqrt,
-    'ln': op.ln,
-    'lg': op.lg,
-    'normcdf': op.normcdf,
-    'normpdf': op.normpdf,
-    'invnorm': op.invnorm,
+_normal = statistics.NormalDist()
+
+function_list = {
+    "abs": abs,
+    "arg": cmath.phase,
+    "conj": operator.methodcaller("conjugate"),
+    "Im": operator.attrgetter("imag"),
+    "Re": operator.attrgetter("real"),
+    "sgn": lambda x: 0 if x == 0 else (1 if x > 0 else -1),
+    "sin": cmath.sin,
+    "cosec": lambda x: 1 / cmath.sin(x),
+    "csc": lambda x: 1 / cmath.sin(x),
+    "cos": cmath.cos,
+    "sec": lambda x: 1 / cmath.cos(x),
+    "tan": cmath.tan,
+    "cot": lambda x: 1 / cmath.tan(x),
+    "sinh": cmath.sinh,
+    "cosh": cmath.cosh,
+    "tanh": cmath.tanh,
+    "asin": cmath.asin,
+    "arcsin": cmath.asin,
+    "acos": cmath.acos,
+    "arccos": cmath.acos,
+    "atan": cmath.atan,
+    "arctan": cmath.atan,
+    "sqrt": cmath.sqrt,
+    "ln": cmath.log,
+    "lg": cmath.log10,
+    "normcdf": _normal.cdf,
+    "normpdf": _normal.pdf,
+    "invnorm": _normal.inv_cdf,
 }
+
 
 symbols = '''
 +
