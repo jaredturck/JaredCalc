@@ -9,7 +9,7 @@ class Parse:
 
     def tokenize(self, expression):
         ''' Tokenize the input expression into numbers, operators, and parentheses '''
-        return re.findall(r'\d+\.\d+|\d+|[a-zA-Z]+|[+*/()!$\-]', expression)
+        return re.findall(r'\d+\.\d+|\d+|[a-zA-Z]+|[+*/()!$\-\^]', expression)
 
     def peek(self):
         ''' Look at the next token without consuming it '''
@@ -35,12 +35,21 @@ class Parse:
 
     def term(self):
         ''' Parse multiply and divide '''
-        return self._exp(('*', '/'), self.postfix)
+        return self._exp(('*', '/'), self.power)
+
+    def power(self):
+        ''' Raise to the power '''
+        node = self.postfix()
+        while self.peek() == '^':
+            self.eat()
+            node = ('symbol', '^', node, self.power)
+            node = ('symbol', '^', node[2], node[3]())
+        return node
 
     def postfix(self):
         ''' Parse postfix operators like factorial '''
         node = self.factor()
-        while self.peek() in ('!','$'):
+        while self.peek() in ('!','$', '£'):
             op = self.eat()
             node = ('postfix', op, node)
         return node
@@ -89,7 +98,7 @@ class Parse:
         if node[0] == 'postfix':
             _, op, inner = node
             val = self.evaluate(inner)
-            if op == '$':
+            if op in ('$', '£'):
                 return val
             if op == '!':
                 return math.factorial(val)
@@ -106,6 +115,8 @@ class Parse:
             return a * b
         elif op == '/':
             return a / b
+        elif op == '^':
+            return a ** b
 
     def __str__(self):
         v = self.evaluate()
