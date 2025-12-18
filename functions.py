@@ -382,6 +382,9 @@ class Func:
             sign = -1
             x = -x
         
+        if x >= 6:
+            return sign * 1.0
+        
         s = 0
         term = x
         n = 0
