@@ -76,6 +76,22 @@ class Func:
 
         return s
     
+    def sqrtFn(self, x):
+        ''' Square root using Newton's method '''
+        if x < 0:
+            raise ValueError('X cannot be negative for sqrt')
+        if x == 0:
+            return 0.0
+        
+        y = max(x, 1)
+        while True:
+            p = y
+            y = 0.5 * (y + x  / y)
+            if y == p:
+                break
+            
+        return y
+    
     def cosFn(self, x):
         ''' Compute cosine as sin(x/2 - x) '''
         return self.sinFn(self.HALF_PI - x)
@@ -110,6 +126,86 @@ class Func:
         ''' Compute hyperbolic tangent '''
         ex2 = self.expFn(x * 2)
         return (ex2 - 1) / (ex2 + 1)
+    
+    def cosecFn(self, x):
+        ''' Compute cosecant '''
+        return self.cscFn(x)
+
+    def expm1Fn(self, x):
+        ''' Compute exp(x) '''
+        return self.expFn(x) - 1
+
+    def exp2Fn(self, x):
+        ''' Compute 2 raised to the power x using expFn '''
+        return self.expFn(x * self.LN2)
+        
+    def ldexpFn(self, x, i):
+        ''' Compute x * (2 ** i) '''
+        return x * (2 ** i)
+    
+    def logFn(self, x):
+        ''' Compute natural logarithm '''
+        return self.lnFn(x)
+
+    def log10Fn(self, x):
+        ''' Compute base-10 logarithm '''
+        return self.lnFn(x) / self.LN10
+
+    def log2Fn(self, x):
+        ''' Compute base-2 logarithm '''
+        return self.lnFn(x) / self.LN2
+
+    def lgFn(self, x):
+        ''' Compute base-10 logarithm '''
+        return self.log10Fn(x)
+
+    def log1pFn(self, x):
+        ''' Compute natural logarithm of (1 + x) '''
+        return self.lnFn(1 + x)
+    
+    def hypotFn(self, x, y):
+        ''' Compute hypotenuse using sqrt(x^2 + y^2) '''
+        return self.sqrtFn(x*x + y*y)
+    
+    def asinhFn(self, x):
+        ''' Compute inverse hyperbolic sine '''
+        return self.lnFn(x + self.sqrtFn(x * x + 1.0))
+    
+    def atanhFn(self, x):
+        ''' Compute inverse hyperbolic tangent '''
+        return 0.5 * self.lnFn((1.0 + x) / (1.0 - x))
+
+    def acoshFn(self, x):
+        ''' Compute inverse hyperbolic cosine '''
+        return self.lnFn(x + self.sqrtFn(x - 1.0) * self.sqrtFn(x + 1.0))
+    
+    def radiansFn(self, deg):
+        ''' Convert degrees to radians '''
+        return deg * (self.PI / 180)
+    
+    def degreesFn(self, rad):
+        ''' Convert radians to degrees '''
+        return rad * (180 / self.PI)
+    
+    def fabsFn(self, x):
+        ''' Compute absolute value '''
+        return abs(x)
+    
+    def fmaFn(self, a, b, c):
+        ''' Compute fused multiply-add: a * b + c '''
+        return a*b + c
+    
+    def permFn(self, n, k):
+        ''' Compute permutations P(n, k) '''
+        return self.factorialFn(n) // self.factorialFn(n - k)
+    
+    def combFn(self, n, k):
+        ''' Compute combinations C(n, k) '''
+        return self.factorialFn(n) // (self.factorialFn(k) * self.factorialFn(n - k))
+    
+    def lcmFn(self, a, b):
+        ''' Compute least common multiple '''
+        return abs(a * b) // self.gcdFn(a, b)
 
 _normal = statistics.NormalDist()
 functions = Func()
@@ -120,14 +216,14 @@ function_list = {
     "conj": operator.methodcaller("conjugate"),
     "Im": operator.attrgetter("imag"),
     "Re": operator.attrgetter("real"),
-    "sgn": lambda x: 0 if x == 0 else (1 if x > 0 else -1),
+    "sgn": functions.sgnFn,
     "sin": functions.sinFn,
-    "cosec": lambda x: 1 / functions.sinFn(x),
-    "csc": lambda x: 1 / functions.sinFn(x),
+    "cosec": functions.cosecFn,
+    "csc": functions.cscFn,
     "cos": functions.cosFn,
-    "sec": lambda x: 1 / functions.cosFn(x),
+    "sec": functions.secFn,
     "tan": functions.tanFn,
-    "cot": lambda x: 1 / functions.tanFn(x),
+    "cot": functions.cotFn,
     "sinh": functions.sinhFn,
     "cosh": functions.coshFn,
     "tanh": functions.tanhFn,
