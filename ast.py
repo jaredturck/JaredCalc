@@ -9,7 +9,7 @@ class Parse:
 
     def tokenize(self, expression):
         ''' Tokenize the input expression into numbers, operators, and parentheses '''
-        return re.findall(r'\d+\.\d+|\d+|[a-zA-Z]+|[+*/()!\-]', expression)
+        return re.findall(r'\d+\.\d+|\d+|[a-zA-Z]+|[+*/()!$\-]', expression)
 
     def peek(self):
         ''' Look at the next token without consuming it '''
@@ -40,9 +40,9 @@ class Parse:
     def postfix(self):
         ''' Parse postfix operators like factorial '''
         node = self.factor()
-        while self.peek() == '!':
-            self.eat()
-            node = ('postfix', '!', node)
+        while self.peek() in ('!','$'):
+            op = self.eat()
+            node = ('postfix', op, node)
         return node
 
     def factor(self):
@@ -52,6 +52,10 @@ class Parse:
             n = self.expr()
             self.eat()
             return n
+        
+        # Skip symbol
+        if t in ['£', '$']:
+            return self.factor()
 
         # check for function
         if t in function_list:
@@ -84,11 +88,11 @@ class Parse:
 
         if node[0] == 'postfix':
             _, op, inner = node
-            a = self.evaluate(inner)
+            val = self.evaluate(inner)
+            if op == '$':
+                return val
             if op == '!':
-                if isinstance(a, decimal.Decimal):
-                    a = int(a)
-                return math.factorial(a)
+                return math.factorial(val)
 
         _, op, left, right = node
         a = self.evaluate(left)

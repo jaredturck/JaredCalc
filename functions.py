@@ -106,8 +106,9 @@ constants = {
 }
 
 symbols = {
-    "!":   (12, "postfix"),
-    "$":   (12, "postfix"),
+    "!":   (12, "postfix"), # added factorial operator
+    "$":   (12, "postfix"), # add
+    '£':   (12, "postfix"), # add
     "^":   (11, "right"),
     "@":   (10, "left"),
     "</":  (10, "left"),
