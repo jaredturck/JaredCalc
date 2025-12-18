@@ -400,6 +400,90 @@ class Func:
             n += 1
         
         return sign * self.TWO_SQRT_PI * s
+    
+    def erfcFn(self, x):
+        ''' Compute complementary error function '''
+        return 1.0 - self.erfFn(x)
+    
+    def truncFn(self, x):
+        ''' Truncate x to integer '''
+        return int(x)
+    
+    def isnanFn(self, x):
+        ''' Check if x is NaN '''
+        return x != x
+    
+    def isinfFn(self, x):
+        ''' Check if x is infinite '''
+        return abs(x) == float("inf")
+    
+    def isfiniteFn(self, x):
+        ''' Check if x is finite '''
+        return x == x and abs(x) != float("inf")
+    
+    def isqrtFn(self, n):
+        ''' Compute integer square root '''
+        return int(self.sqrtFn(n))
+    
+    def cbrtFn(self, x):
+        ''' Compute cube root '''
+        return self.powFn(x, 1/3)
+    
+    def prodFn(self, arr):
+        ''' Compute product of iterable '''
+        p = 1
+        for v in arr:
+            p *= v
+        return p
+    
+    def sumprodFn(self, a, b):
+        ''' Compute sum of products of two iterables '''
+        s = 0
+        for x, y in zip(a, b):
+            s += x * y
+        return s
+    
+    def modfFn(self, x):
+        ''' Return fractional and integer parts of x '''
+        i = float(self.truncFn(x))
+        return (x - i, i)
+    
+    def fmodFn(self, x, y):
+        ''' Compute floating-point modulus '''
+        return x - self.truncFn(x / y) * y
+    
+    def fsumFn(self, arr):
+        ''' Compute sum of iterable using Kahan summation '''
+        s = 0
+        c = 0
+        for v in arr:
+            y = v - c
+            t = s + y
+            c = (t - s) - y
+            s = t
+        return s
+    
+    def iscloseFn(self, a, b, rel_tol=1e-09, abs_tol=0.0):
+        ''' Check if two floats are close in value '''
+        if a == b:
+            return True
+        if self.isinfFn(a) or self.isinfFn(b) or self.isnanFn(a) or self.isnanFn(b):
+            return False
+        diff = abs(a - b)
+        return diff <= max(rel_tol * max(abs(a), abs(b)), abs_tol)
+    
+    def remainderFn(self, x, y):
+        ''' Compute remainder of x divided by y '''
+        n = round(x / y)
+        return x - n * y
+    
+    def cbrtFn(self, x):
+        ''' Compute cube root '''
+        if x == 0:
+            return 0.0
+        sign = -1 if x < 0 else 1
+        x = abs(x)
+        return sign * (x ** (1/3))
 
 _normal = statistics.NormalDist()
 functions = Func()
@@ -450,7 +534,6 @@ function_list = {
     "factorial": functions.factorialFn,
     "floor": functions.floorFn,
     "fmod": functions.fmodFn,
-    "frexp": functions.frexpFn,
     "fsum": functions.fsumFn,
     "gamma": functions.gammaFn,
     "gcd": functions.gcdFn,
@@ -468,14 +551,12 @@ function_list = {
     "log1p": functions.log1pFn,
     "log2": functions.log2Fn,
     "modf": functions.modfFn,
-    "nextafter": functions.nextafterFn,
     "perm": functions.permFn,
     "pow": functions.powFn,
     "prod": functions.prodFn,
     "radians": functions.radiansFn,
     "remainder": functions.remainderFn,
     "trunc": functions.truncFn,
-    "ulp": functions.ulpFn,
     "cbrt": functions.cbrtFn,
     "exp2": functions.exp2Fn,
     "sumprod": functions.sumprodFn,
