@@ -45,7 +45,7 @@ class Func:
 
             n += 1
         
-        return s * (2 ** k)
+        return s * (2.0 ** k)
 
     def sinFn(self, x):
         ''' Compute sine using Taylor series expansion '''
@@ -78,7 +78,7 @@ class Func:
     
     def cosFn(self, x):
         ''' Compute cosine as sin(x/2 - x) '''
-        return self.sinFn(x / 2 - x)
+        return self.sinFn(self.HALF_PI - x)
 
     def tanFn(self, x):
         ''' Compute tangent as sine divided by cosine '''
