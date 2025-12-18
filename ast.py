@@ -5,11 +5,11 @@ class Parse:
     def __init__(self, expression):
         self.tokens = self.tokenize(expression)
         self.i = 0
-        self.ast = self.comparison()
+        self.ast = self.ast = self.logical_or()
 
     def tokenize(self, expression):
         ''' Tokenize the input expression into numbers, operators, and parentheses '''
-        return re.findall(r'\d+\.\d+|\d+|[a-zA-Z]+|!==|===|<==|>==|<=|>=|==|!=|<<|>>|//|\*\*|[<>]|[+*/()!$£%\-\^\.&\|~]', expression)
+        return re.findall(r'\d+\.\d+|\d+|[a-zA-Z]+|&&|\|\||!==|===|<==|>==|<=|>=|==|!=|<<|>>|//|\*\*|[<>]|[+*/()!$£%\-\^\.&\|~]', expression)
 
     def peek(self):
         ''' Look at the next token without consuming it '''
@@ -28,6 +28,14 @@ class Parse:
             op = self.eat()
             node = ('symbol', op, node, func())
         return node
+    
+    def logical_or(self):
+        ''' Parse logical OR '''
+        return self._exp(('||',), self.logical_and)
+
+    def logical_and(self):
+        ''' Parse logical AND '''
+        return self._exp(('&&',), self.comparison)
     
     def comparison(self):
         return self._exp(('<', '<=', '>', '>=', '==', '!=', '===', '!==', '<==', '>=='), self.bitor)
@@ -86,7 +94,7 @@ class Parse:
         ''' Parse numbers and parenthesized '''
         t = self.eat()
         if t == '(':
-            n = self.comparison()
+            n = self.logical_or()
             self.eat()
             return n
         
@@ -97,7 +105,7 @@ class Parse:
         # check for function
         if t in function_list:
             self.eat()
-            arg = self.comparison()
+            arg = self.logical_or()
             self.eat()
             return ('function', t, arg)
 
@@ -133,6 +141,12 @@ class Parse:
 
         _, op, left, right = node
         a = self.evaluate(left)
+
+        if op == '&&':
+            return a and self.evaluate(right)
+        if op == '||':
+            return a or self.evaluate(right)
+
         b = self.evaluate(right)
 
         # Arithmetic operators

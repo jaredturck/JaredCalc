@@ -137,8 +137,8 @@ symbols = {
     "!=":  (5, "left"), # add inequality operator
     "===": (5, "left"), # add strict equality operator
     "!==": (5, "left"), # add strict inequality operator
-    "&&":  (4, "left"),
-    "||":  (3, "left"),
+    "&&":  (4, "left"), # added logical AND operator
+    "||":  (3, "left"), # added logical OR operator
     "=":   (2, "right"),
     "=>":  (2, "right"),
     "?":   (1, "ternary"),
