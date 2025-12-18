@@ -25,6 +25,18 @@ class Func:
         self.SQRT2 = 1.4142135623730951
         self.SQRT_2PI = 2.5066282746310002
         self.TWO_SQRT_PI = 1.1283791670955128
+
+        self.LANCZOS_CONSTANTS = [
+            0.99999999999980993,
+            676.5203681218851,
+            -1259.1392167224028,
+            771.32342877765313,
+            -176.61502916214059,
+            12.507343278686905,
+            -0.13857109526572012,
+            9.9843695780195716e-6,
+            1.5056327351493116e-7,
+        ]
     
     def lnFn(self, x):
         ''' Compute neural logarithm using talyor series expansion '''
@@ -484,6 +496,39 @@ class Func:
         sign = -1 if x < 0 else 1
         x = abs(x)
         return sign * (x ** (1/3))
+    
+    def gammaFn(self, x):
+        ''' Compute gamma function using Lanczos approximation '''
+        if x <= 0:
+            raise ValueError('X must be positive for gamma function')
+        
+        g = 0.7
+        
+        if x < 0.5:
+            s = self.sinFn(self.PI * x)
+            if s == 0:
+                raise ValueError('X results in singularity for gamma function')
+            
+            u = 1 - x
+            z = u - 1
+            a = self.LANCZOS_CONSTANTS[0]
+            for i in range(1, len(self.LANCZOS_CONSTANTS)):
+                a += self.LANCZOS_CONSTANTS[i] / (z + i)
+            t = z + g + 0.5
+            gu = self.SQRT_2PI * (t ** (u + 0.5)) * self.expFn(-t) * a
+            
+            return self.PI / (s * gu)
+        
+        z = x - 1
+        a = self.LANCZOS_CONSTANTS[0]
+        for i in range(1, len(self.LANCZOS_CONSTANTS)):
+            a += self.LANCZOS_CONSTANTS[i] / (z + i)
+        t = z + g + 0.5
+        return self.SQRT_2PI * (t ** (z + 0.5)) * self.expFn(-t) * a
+    
+    def lgammaFn(self, x):
+        ''' Compute natural logarithm of gamma function '''
+        return self.lnFn(self.gammaFn(x))
 
 _normal = statistics.NormalDist()
 functions = Func()
