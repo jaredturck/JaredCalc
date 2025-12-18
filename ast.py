@@ -9,7 +9,7 @@ class Parse:
 
     def tokenize(self, expression):
         ''' Tokenize the input expression into numbers, operators, and parentheses '''
-        return re.findall(r'\d+\.\d+|\d+|[a-zA-Z]+|!==|===|<==|>==|<=|>=|==|!=|//|\*\*|[<>]|[+*/()!$£%\-\^\.]', expression)
+        return re.findall(r'\d+\.\d+|\d+|[a-zA-Z]+|!==|===|<==|>==|<=|>=|==|!=|<<|>>|//|\*\*|[<>]|[+*/()!$£%\-\^\.&\|~]', expression)
 
     def peek(self):
         ''' Look at the next token without consuming it '''
@@ -30,8 +30,23 @@ class Parse:
         return node
     
     def comparison(self):
-        ''' Parse comparison operators '''
-        return self._exp(('<', '<=', '>', '>=', '<==', '>==', '==', '!=', '===', '!=='), self.expr)
+        return self._exp(('<', '<=', '>', '>=', '==', '!=', '===', '!==', '<==', '>=='), self.bitor)
+
+    def bitor(self):
+        ''' Parse bitwise OR '''
+        return self._exp(('|',), self.bitxor)
+
+    def bitxor(self):
+        ''' Parse bitwise XOR '''
+        return self._exp(('xor', 'XOR'), self.bitand)
+
+    def bitand(self):
+        ''' Parse bitwise AND '''
+        return self._exp(('&',), self.shift)
+
+    def shift(self):
+        ''' Parse bitwise shifts '''
+        return self._exp(('<<', '>>'), self.expr)
 
     def expr(self):
         ''' Parse add and subtract '''
@@ -40,19 +55,24 @@ class Parse:
     def term(self):
         ''' Parse multiply and divide '''
         return self._exp(('*', '/', '//', '%', '.'), self.percomb)
-    
+
     def percomb(self):
         ''' Parse permutations and combinations '''
         return self._exp(('P', 'C'), self.power)
 
     def power(self):
         ''' Raise to the power '''
-        node = self.postfix()
-        while self.peek() in ('^', '**'):
+        node = self.prefix()
+        if self.peek() in ('^', '**'):
             self.eat()
-            node = ('symbol', '^', node, self.power)
-            node = ('symbol', '^', node[2], node[3]())
+            node = ('symbol', '^', node, self.power())
         return node
+
+    def prefix(self):
+        if self.peek() == '~':
+            self.eat()
+            return ('unary', '~', self.prefix())
+        return self.postfix()
 
     def postfix(self):
         ''' Parse postfix operators like factorial '''
@@ -115,6 +135,7 @@ class Parse:
         a = self.evaluate(left)
         b = self.evaluate(right)
 
+        # Arithmetic operators
         if op == '+':
             return a + b
         elif op == '-':
@@ -125,16 +146,30 @@ class Parse:
             return a / b
         elif op == '^':
             return a ** b
-        elif op == 'P':
-            return function_list['perm'](a, b)
-        elif op == 'C':
-            return function_list['comb'](a, b)
         elif op == '//':
             return a // b
         elif op == '%':
             return a % b
         elif op == '.':
             return a * b
+        
+        # Permutation and Combination
+        elif op == 'P':
+            return function_list['perm'](a, b)
+        elif op == 'C':
+            return function_list['comb'](a, b)
+        
+        # bitwise operators
+        elif op == '&':
+            return a & b
+        elif op == '|':
+            return a | b
+        elif op == 'xor':
+            return a ^ b
+        elif op == '<<':
+            return a << b
+        elif op == '>>':
+            return a >> b
         
         # Comparison operators
         elif op == '<':

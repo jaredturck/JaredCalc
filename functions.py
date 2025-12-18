@@ -111,9 +111,9 @@ symbols = {
     '£':   (12, "postfix"), # add currency symbol
     "^":   (11, "right"), # add power operator
     "**":  (11, "right"), # add power operator
-    "@":   (10, "left"), # skip for now
-    "</":  (10, "left"), # skip for now
-    "/>":  (10, "left"), # skip for now
+    "@":   (10, "left"), # skip
+    "</":  (10, "left"), # skip
+    "/>":  (10, "left"), # skip
     "P":   (9, "left"), # add permutation operator
     "C":   (9, "left"), # add combination operator
     "*":   (8, "left"), # multiply operator
@@ -121,17 +121,17 @@ symbols = {
     "//":  (8, "left"), # floor division operator
     "%":   (8, "left"), # modulus operator
     ".":   (8, "left"), # multiply operator
-    "><":  (8, "left"), # skip for now
+    "><":  (8, "left"), # skip
     "+":   (7, "left"), # addition operator
     "-":   (7, "left"), # subtraction operator
-    "<+>": (7, "left"), # skip for now
+    "<+>": (7, "left"), # skip
     "<":   (6, "left"), # added less than operator
     "<=":  (6, "left"), # added less than or equal to operator
     ">":   (6, "left"), # added greater than operator
     ">=":  (6, "left"), # added greater than or equal to operator
-    "<*":  (6, "left"), # skip for now
+    "<*":  (6, "left"), # skip
     "<==": (6, "left"), # add strict less than or equal to operator
-    ">*":  (6, "left"), # skip for now
+    ">*":  (6, "left"), # skip
     ">==": (6, "left"), # add strict greater than or equal to operator
     "==":  (5, "left"), # add equality operator
     "!=":  (5, "left"), # add inequality operator
