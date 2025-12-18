@@ -20,6 +20,7 @@ class Func:
         self.E = 2.718281828459045
         self.TAU = 6.283185307179586
         self.HALF_PI = 1.5707963267948966
+        self.QUARTER_PI = 0.7853981633974483
         self.LN1_1 = 0.09531017980432493
         self.LN2 = 0.6931471805599453
         self.LN10 = 2.302585092994046
@@ -110,6 +111,62 @@ class Func:
             n += 2
 
         return s
+    
+    def atanFn(self, x):
+        ''' Compute arctangent using Taylor series expansion '''
+        if x == 0:
+            return 0
+        
+        sign = 1
+        if x < 0:
+            x = -x
+            sign = -1
+        
+        base = 0
+        factor = 1
+
+        if x > 1:
+            x = 1 / x
+            base = self.HALF_PI
+            factor = -1
+        
+        limit = self.SQRT2 - 1
+
+        if x > limit:
+            x = (x - 1) / (x + 1)
+            base += factor * self.QUARTER_PI
+        
+        s = 0
+        term = x
+        n = 1
+        x2 = x * x
+
+        while True:
+            p = s
+            s += term / n
+            if s == p:
+                break
+            term *= -x2
+            n += 2
+        
+        return sign * (base + factor * s)
+    
+    def asinFn(self, x):
+        ''' Compute arcsine '''
+        if x < -1 or x > 1:
+            raise ValueError('X must be in range [-1, 1] for asin')
+        if x == 1:
+            return self.HALF_PI
+        if x == -1:
+            return -self.HALF_PI
+        
+        return self.atanFn(x / self.sqrtFn(1 - x * x))
+    
+    def acosFn(self, x):
+        ''' Compute arccosine '''
+        if x < -1 or x > 1:
+            raise ValueError('X must be in range [-1, 1] for acos')
+        return self.HALF_PI - self.asinFn(x)
     
     def sqrtFn(self, x):
         ''' Square root using Newton's method '''
@@ -274,6 +331,14 @@ class Func:
         ''' Compute ceiling of x '''
         i = int(x)
         return i if x <= 0 or x == i else i + 1
+    
+    def sgnFn(self, x):
+        ''' Compute sign of x '''
+        if x > 0:
+            return 1
+        elif x < 0:
+            return -1
+        return 0
 
 _normal = statistics.NormalDist()
 functions = Func()
