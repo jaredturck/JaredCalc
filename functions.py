@@ -1,5 +1,3 @@
-# import math
-import cmath
 import statistics
 import operator
 import time
@@ -339,13 +337,33 @@ class Func:
         elif x < 0:
             return -1
         return 0
+    
+    def atan2Fn(self, x, y):
+        ''' Compute arctangent two '''
+
+        if x > 0:
+            return self.atanFn(y / x)
+        if x < 0:
+            if y >= 0:
+                return self.atanFn(y / x) + self.PI
+            return self.atanFn(y / x) - self.PI
+        
+        if y > 0:
+            return self.HALF_PI
+        if y < 0:
+            return -self.HALF_PI
+    
+    def copysignFn(self, x, y):
+        ''' Returns abs(x) with sign of y '''
+        ax = abs(x)
+        return -ax if y < 0 else ax
 
 _normal = statistics.NormalDist()
 functions = Func()
 
 function_list = {
     "abs": abs,
-    "arg": cmath.phase,
+    "arg": functions.phase,
     "conj": operator.methodcaller("conjugate"),
     "Im": operator.attrgetter("imag"),
     "Re": operator.attrgetter("real"),
