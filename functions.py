@@ -269,6 +269,11 @@ class Func:
         ''' Compute floor of x '''
         i = int(x)
         return i if x >= 0 or x == i else i - 1
+    
+    def ceilFn(self, x):
+        ''' Compute ceiling of x '''
+        i = int(x)
+        return i if x <= 0 or x == i else i + 1
 
 _normal = statistics.NormalDist()
 functions = Func()
