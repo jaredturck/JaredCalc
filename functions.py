@@ -107,17 +107,18 @@ constants = {
 
 symbols = {
     "!":   (12, "postfix"), # added factorial operator
-    "$":   (12, "postfix"), # add
-    '£':   (12, "postfix"), # add
-    "^":   (11, "right"),
-    "@":   (10, "left"),
-    "</":  (10, "left"),
-    "/>":  (10, "left"),
-    "P":   (9, "left"),
-    "C":   (9, "left"),
-    "*":   (8, "left"),
-    "/":   (8, "left"),
-    "//":  (8, "left"),
+    "$":   (12, "postfix"), # add currency symbol
+    '£':   (12, "postfix"), # add currency symbol
+    "^":   (11, "right"), # add power operator
+    "**":  (11, "right"), # add power operator
+    "@":   (10, "left"), # skip for now
+    "</":  (10, "left"), # skip for now
+    "/>":  (10, "left"), # skip for now
+    "P":   (9, "left"), # add permutation operator
+    "C":   (9, "left"), # add combination operator
+    "*":   (8, "left"), # multiply operator
+    "/":   (8, "left"), # divide operator
+    "//":  (8, "left"), # floor division operator
     "%":   (8, "left"),
     ".":   (8, "left"),
     "><":  (8, "left"),

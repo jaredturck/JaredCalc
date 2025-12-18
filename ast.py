@@ -9,7 +9,7 @@ class Parse:
 
     def tokenize(self, expression):
         ''' Tokenize the input expression into numbers, operators, and parentheses '''
-        return re.findall(r'\d+\.\d+|\d+|[a-zA-Z]+|[+*/()!$\-\^]', expression)
+        return re.findall(r'\d+\.\d+|\d+|[a-zA-Z]+|\/\/|\*\*|[+*/()!$\-\^]', expression)
 
     def peek(self):
         ''' Look at the next token without consuming it '''
@@ -35,12 +35,16 @@ class Parse:
 
     def term(self):
         ''' Parse multiply and divide '''
-        return self._exp(('*', '/'), self.power)
+        return self._exp(('*', '/', '//'), self.percomb)
+    
+    def percomb(self):
+        ''' Parse permutations and combinations '''
+        return self._exp(('P', 'C'), self.power)
 
     def power(self):
         ''' Raise to the power '''
         node = self.postfix()
-        while self.peek() == '^':
+        while self.peek() in ('^', '**'):
             self.eat()
             node = ('symbol', '^', node, self.power)
             node = ('symbol', '^', node[2], node[3]())
@@ -117,6 +121,12 @@ class Parse:
             return a / b
         elif op == '^':
             return a ** b
+        elif op == 'P':
+            return math.perm(a, b)
+        elif op == 'C':
+            return math.comb(a, b)
+        elif op == '//':
+            return a // b
 
     def __str__(self):
         v = self.evaluate()
