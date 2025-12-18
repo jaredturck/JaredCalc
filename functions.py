@@ -26,6 +26,41 @@ class Func:
         self.SQRT2 = 1.4142135623730951
         self.SQRT_2PI = 2.5066282746310002
     
+    def lnFn(self, x):
+        ''' Compute neural logarithm using talyor series expansion '''
+
+        if x <= 0:
+            raise ValueError('X must be positive for ln')
+        
+        result = 0.0
+        while x >= 2.0:
+            x *= 0.5
+            result += self.LN2
+        
+        while x < 1.0:
+            x *= 2.0
+            result -= self.LN2
+        
+        if x > self.SQRT2:
+            x *= 0.5
+            result += self.LN2
+        
+        y = (x - 1) / (x + 1)
+        y2 = y * y
+        s = 0
+        term = y
+        n = 1
+
+        while True:
+            p = s
+            s += term / n
+            if s == p:
+                break
+            term *= y2
+            n += 2
+        
+        return result + 2.0 * s
+    
     def expFn(self, x):
         ''' Compute exponential using Taylor series expansion '''
         
