@@ -138,6 +138,14 @@ class Func:
             n *= i
         return n
     
+    def gcdFn(self, a, b):
+        ''' Compute greatest common divisor using Euclidean algorithm '''
+        a = abs(a)
+        b = abs(b)
+        while b != 0:
+            a, b = b, a % b
+        return a
+    
     def cosFn(self, x):
         ''' Compute cosine as sin(x/2 - x) '''
         return self.sinFn(self.HALF_PI - x)
