@@ -357,6 +357,18 @@ class Func:
         ''' Returns abs(x) with sign of y '''
         ax = abs(x)
         return -ax if y < 0 else ax
+    
+    def distFn(self, p, q):
+        ''' Compute Enclidean distance between two points '''
+        if len(p) != len(q):
+            raise ValueError('Points must have the same dimension for dist')
+        
+        s = 0
+        for a,b in zip(p, q):
+            d = a - b
+            s += d * d
+        
+        return self.sqrtFn(s)
 
 _normal = statistics.NormalDist()
 functions = Func()
