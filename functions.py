@@ -119,24 +119,24 @@ symbols = {
     "*":   (8, "left"), # multiply operator
     "/":   (8, "left"), # divide operator
     "//":  (8, "left"), # floor division operator
-    "%":   (8, "left"),
-    ".":   (8, "left"),
-    "><":  (8, "left"),
-    "+":   (7, "left"),
-    "-":   (7, "left"),
-    "<+>": (7, "left"),
-    "<":   (6, "left"),
-    "<=":  (6, "left"),
-    ">":   (6, "left"),
-    ">=":  (6, "left"),
-    "<*":  (6, "left"),
+    "%":   (8, "left"), # modulus operator
+    ".":   (8, "left"), # multiply operator
+    "><":  (8, "left"), # skip for now
+    "+":   (7, "left"), # addition operator
+    "-":   (7, "left"), # subtraction operator
+    "<+>": (7, "left"), # skip for now
+    "<":   (6, "left"), # added less than operator
+    "<=":  (6, "left"), # added less than or equal to operator
+    ">":   (6, "left"), # added greater than operator
+    ">=":  (6, "left"), # added greater than or equal to operator
+    "<*":  (6, "left"), # skip for now
     "<==": (6, "left"),
-    ">*":  (6, "left"),
+    ">*":  (6, "left"), # skip for now
     ">==": (6, "left"),
-    "==":  (5, "left"),
-    "!=":  (5, "left"),
-    "===": (5, "left"),
-    "!==": (5, "left"),
+    "==":  (5, "left"), # add equality operator
+    "!=":  (5, "left"), # add inequality operator
+    "===": (5, "left"), # add strict equality operator
+    "!==": (5, "left"), # add strict inequality operator
     "&&":  (4, "left"),
     "||":  (3, "left"),
     "=":   (2, "right"),

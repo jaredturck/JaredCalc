@@ -5,11 +5,11 @@ class Parse:
     def __init__(self, expression):
         self.tokens = self.tokenize(expression)
         self.i = 0
-        self.ast = self.expr()
+        self.ast = self.comparison()
 
     def tokenize(self, expression):
         ''' Tokenize the input expression into numbers, operators, and parentheses '''
-        return re.findall(r'\d+\.\d+|\d+|[a-zA-Z]+|\/\/|\*\*|[+*/()!$\-\^]', expression)
+        return re.findall(r'\d+\.\d+|\d+|[a-zA-Z]+|!==|===|<=|>=|==|!=|//|\*\*|[<>]|[+*/()!$£%\-\^\.]', expression)
 
     def peek(self):
         ''' Look at the next token without consuming it '''
@@ -28,6 +28,10 @@ class Parse:
             op = self.eat()
             node = ('symbol', op, node, func())
         return node
+    
+    def comparison(self):
+        ''' Parse comparison operators '''
+        return self._exp(('<', '<=', '>', '>=', '==', '!=', '===', '!=='), self.expr)
 
     def expr(self):
         ''' Parse add and subtract '''
@@ -35,7 +39,7 @@ class Parse:
 
     def term(self):
         ''' Parse multiply and divide '''
-        return self._exp(('*', '/', '//'), self.percomb)
+        return self._exp(('*', '/', '//', '%', '.'), self.percomb)
     
     def percomb(self):
         ''' Parse permutations and combinations '''
@@ -62,7 +66,7 @@ class Parse:
         ''' Parse numbers and parenthesized '''
         t = self.eat()
         if t == '(':
-            n = self.expr()
+            n = self.comparison()
             self.eat()
             return n
         
@@ -73,7 +77,7 @@ class Parse:
         # check for function
         if t in function_list:
             self.eat()
-            arg = self.expr()
+            arg = self.comparison()
             self.eat()
             return ('function', t, arg)
 
@@ -127,6 +131,28 @@ class Parse:
             return math.comb(a, b)
         elif op == '//':
             return a // b
+        elif op == '%':
+            return a % b
+        elif op == '.':
+            return a * b
+        
+        # Comparison operators
+        elif op == '<':
+            return a < b
+        elif op == '<=':
+            return a <= b
+        elif op == '>':
+            return a > b
+        elif op == '>=':
+            return a >= b
+        elif op == '==':
+            return a == b
+        elif op == '!=':
+            return a != b
+        elif op == '===':
+            return type(a) is type(b) and a == b
+        elif op == '!==':
+            return not (type(a) is type(b) and a == b)
 
     def __str__(self):
         v = self.evaluate()
