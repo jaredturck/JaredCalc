@@ -24,6 +24,7 @@ class Func:
         self.LN10 = 2.302585092994046
         self.SQRT2 = 1.4142135623730951
         self.SQRT_2PI = 2.5066282746310002
+        self.TWO_SQRT_PI = 1.1283791670955128
     
     def lnFn(self, x):
         ''' Compute neural logarithm using talyor series expansion '''
@@ -369,6 +370,33 @@ class Func:
             s += d * d
         
         return self.sqrtFn(s)
+    
+    def erfFn(self, x):
+        ''' Compute error function '''
+
+        if x == 0:
+            return 0
+        
+        sign = 1
+        if x < 0:
+            sign = -1
+            x = -x
+        
+        s = 0
+        term = x
+        n = 0
+        x2 = x * x
+
+        while True:
+            p = s
+            s += term
+            if s == p:
+                break
+
+            term *= (-x2) * (2 * n + 1) / ((n + 1) * (2 * n + 3))
+            n += 1
+        
+        return sign * self.TWO_SQRT_PI * s
 
 _normal = statistics.NormalDist()
 functions = Func()
