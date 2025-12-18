@@ -89,8 +89,19 @@ class Func:
             y = 0.5 * (y + x  / y)
             if y == p:
                 break
-            
+
         return y
+    
+    def factorialFn(self, x):
+        ''' Compute factorial'''
+        if x < 0:
+            raise ValueError('X cannot be negative for factorial')
+        if x <= 1:
+            return 1
+        n = 1
+        for i in range(2, int(x) + 1):
+            n *= i
+        return n
     
     def cosFn(self, x):
         ''' Compute cosine as sin(x/2 - x) '''
