@@ -1,4 +1,4 @@
-import re, decimal, math
+import re, decimal
 from functions import function_list, constants
 
 class Parse:
@@ -9,7 +9,7 @@ class Parse:
 
     def tokenize(self, expression):
         ''' Tokenize the input expression into numbers, operators, and parentheses '''
-        return re.findall(r'\d+\.\d+|\d+|[a-zA-Z]+|!==|===|<=|>=|==|!=|//|\*\*|[<>]|[+*/()!$£%\-\^\.]', expression)
+        return re.findall(r'\d+\.\d+|\d+|[a-zA-Z]+|!==|===|<==|>==|<=|>=|==|!=|//|\*\*|[<>]|[+*/()!$£%\-\^\.]', expression)
 
     def peek(self):
         ''' Look at the next token without consuming it '''
@@ -31,7 +31,7 @@ class Parse:
     
     def comparison(self):
         ''' Parse comparison operators '''
-        return self._exp(('<', '<=', '>', '>=', '==', '!=', '===', '!=='), self.expr)
+        return self._exp(('<', '<=', '>', '>=', '<==', '>==', '==', '!=', '===', '!=='), self.expr)
 
     def expr(self):
         ''' Parse add and subtract '''
@@ -109,7 +109,7 @@ class Parse:
             if op in ('$', '£'):
                 return val
             if op == '!':
-                return math.factorial(val)
+                return function_list['factorial'](val)
 
         _, op, left, right = node
         a = self.evaluate(left)
@@ -126,9 +126,9 @@ class Parse:
         elif op == '^':
             return a ** b
         elif op == 'P':
-            return math.perm(a, b)
+            return function_list['perm'](a, b)
         elif op == 'C':
-            return math.comb(a, b)
+            return function_list['comb'](a, b)
         elif op == '//':
             return a // b
         elif op == '%':
@@ -153,6 +153,10 @@ class Parse:
             return type(a) is type(b) and a == b
         elif op == '!==':
             return not (type(a) is type(b) and a == b)
+        elif op == '<==':
+            return type(a) is type(b) and a <= b
+        elif op == '>==':
+            return type(a) is type(b) and a >= b
 
     def __str__(self):
         v = self.evaluate()

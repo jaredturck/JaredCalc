@@ -130,9 +130,9 @@ symbols = {
     ">":   (6, "left"), # added greater than operator
     ">=":  (6, "left"), # added greater than or equal to operator
     "<*":  (6, "left"), # skip for now
-    "<==": (6, "left"),
+    "<==": (6, "left"), # add strict less than or equal to operator
     ">*":  (6, "left"), # skip for now
-    ">==": (6, "left"),
+    ">==": (6, "left"), # add strict greater than or equal to operator
     "==":  (5, "left"), # add equality operator
     "!=":  (5, "left"), # add inequality operator
     "===": (5, "left"), # add strict equality operator
