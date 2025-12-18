@@ -15,31 +15,52 @@ def timeit(fn):
     return wrapper
 
 class Func:
-    PI = 3.141592653589793
-    E = 2.718281828459045
-    TAU = 6.283185307179586
-    HALF_PI = 1.5707963267948966
-    LN1_1 = 0.09531017980432493
-    LN2 = 0.6931471805599453
-    LN10 = 2.302585092994046
-    SQRT2 = 1.4142135623730951
-    SQRT_2PI = 2.5066282746310002
+    def __init__(self):
+        self.PI = 3.141592653589793
+        self.E = 2.718281828459045
+        self.TAU = 6.283185307179586
+        self.HALF_PI = 1.5707963267948966
+        self.LN1_1 = 0.09531017980432493
+        self.LN2 = 0.6931471805599453
+        self.LN10 = 2.302585092994046
+        self.SQRT2 = 1.4142135623730951
+        self.SQRT_2PI = 2.5066282746310002
+    
+    def expFn(self, x):
+        ''' Compute exponential using Taylor series expansion '''
+        
+        k = int(round(x / self.LN2))
+        r = x - k * self.LN2
 
-    @staticmethod
-    def sinFn(x):
+        s = 1
+        term = 1
+        n = 1
+
+        while True:
+            p = s
+            term *= r / n
+            s += term
+            if s == p:
+                break
+
+            n += 1
+        
+        return s * (2 ** k)
+
+    def sinFn(self, x):
         ''' Compute sine using Taylor series expansion '''
         
         # Reduce to range [-π, π]
-        if abs(x) > Func.PI:
-            x = ((x + Func.PI) % (Func.TAU)) - Func.PI
+        if abs(x) > self.PI:
+            x = ((x + self.PI) % (self.TAU)) - self.PI
 
         # Reduce to range [-π/2, π/2]
-        if x > Func.HALF_PI:
-            x = Func.PI - x
-        elif x < -Func.HALF_PI:
-            x = -Func.PI - x
+        if x > self.HALF_PI:
+            x = self.PI - x
+        elif x < -self.HALF_PI:
+            x = -self.PI - x
 
-        s = 0.0
+        s = 0
         term = x
         n = 1
         x2 = x * x
@@ -54,8 +75,44 @@ class Func:
             n += 2
 
         return s
+    
+    def cosFn(self, x):
+        ''' Compute cosine as sin(x/2 - x) '''
+        return self.sinFn(x / 2 - x)
+
+    def tanFn(self, x):
+        ''' Compute tangent as sine divided by cosine '''
+        return self.sinFn(x) / self.cosFn(x)
+
+    def secFn(self, x):
+        ''' Compute secant as reciprocal of cosine '''
+        return 1 / self.cosFn(x)
+
+    def cscFn(self, x):
+        ''' Compute cosecant as reciprocal of sine '''
+        return 1 / self.sinFn(x)
+
+    def cotFn(self, x):
+        ''' Compute cotangent as reciprocal of tangent '''
+        return 1 / self.tanFn(x)
+
+    def sinhFn(self, x):
+        ''' Compute hyperbolic sine '''
+        ex = self.expFn(x)
+        return (ex - 1 / ex) / 2
+
+    def coshFn(self, x):
+        ''' Compute hyperbolic cosine '''
+        ex = self.expFn(x)
+        return (ex + 1 / ex) / 2
+
+    def tanhFn(self, x):
+        ''' Compute hyperbolic tangent '''
+        ex2 = self.expFn(x * 2)
+        return (ex2 - 1) / (ex2 + 1)
 
 _normal = statistics.NormalDist()
+functions = Func()
 
 function_list = {
     "abs": abs,
@@ -64,75 +121,75 @@ function_list = {
     "Im": operator.attrgetter("imag"),
     "Re": operator.attrgetter("real"),
     "sgn": lambda x: 0 if x == 0 else (1 if x > 0 else -1),
-    "sin": Func.sinFn,
-    "cosec": lambda x: 1 / Func.sinFn(x),
-    "csc": lambda x: 1 / Func.sinFn(x),
-    "cos": Func.cosFn,
-    "sec": lambda x: 1 / Func.cosFn(x),
-    "tan": Func.tanFn,
-    "cot": lambda x: 1 / Func.tanFn(x),
-    "sinh": Func.sinhFn,
-    "cosh": Func.coshFn,
-    "tanh": Func.tanhFn,
-    "asin": Func.asinFn,
-    "arcsin": Func.asinFn,
-    "acos": Func.acosFn,
-    "arccos": Func.acosFn,
-    "atan": Func.atanFn,
-    "arctan": Func.atanFn,
-    "sqrt": Func.sqrtFn,
-    "ln": Func.lnFn,
-    "lg": Func.lgFn,
+    "sin": functions.sinFn,
+    "cosec": lambda x: 1 / functions.sinFn(x),
+    "csc": lambda x: 1 / functions.sinFn(x),
+    "cos": functions.cosFn,
+    "sec": lambda x: 1 / functions.cosFn(x),
+    "tan": functions.tanFn,
+    "cot": lambda x: 1 / functions.tanFn(x),
+    "sinh": functions.sinhFn,
+    "cosh": functions.coshFn,
+    "tanh": functions.tanhFn,
+    "asin": functions.asinFn,
+    "arcsin": functions.asinFn,
+    "acos": functions.acosFn,
+    "arccos": functions.acosFn,
+    "atan": functions.atanFn,
+    "arctan": functions.atanFn,
+    "sqrt": functions.sqrtFn,
+    "ln": functions.lnFn,
+    "lg": functions.lgFn,
     "normcdf": _normal.cdf,
     "normpdf": _normal.pdf,
     "invnorm": _normal.inv_cdf,
-    "acosh": Func.acoshFn,
-    "asinh": Func.asinhFn,
-    "atan2": Func.atan2Fn,
-    "atanh": Func.atanhFn,
-    "ceil": Func.ceilFn,
-    "comb": Func.combFn,
-    "copysign": Func.copysignFn,
-    "degrees": Func.degreesFn,
-    "dist": Func.distFn,
-    "erf": Func.erfFn,
-    "erfc": Func.erfcFn,
-    "exp": Func.expFn,
-    "expm1": Func.expm1Fn,
-    "fabs": Func.fabsFn,
-    "factorial": Func.factorialFn,
-    "floor": Func.floorFn,
-    "fmod": Func.fmodFn,
-    "frexp": Func.frexpFn,
-    "fsum": Func.fsumFn,
-    "gamma": Func.gammaFn,
-    "gcd": Func.gcdFn,
-    "hypot": Func.hypotFn,
-    "isclose": Func.iscloseFn,
-    "isfinite": Func.isfiniteFn,
-    "isinf": Func.isinfFn,
-    "isnan": Func.isnanFn,
-    "isqrt": Func.isqrtFn,
-    "lcm": Func.lcmFn,
-    "ldexp": Func.ldexpFn,
-    "lgamma": Func.lgammaFn,
-    "log": Func.logFn,
-    "log10": Func.log10Fn,
-    "log1p": Func.log1pFn,
-    "log2": Func.log2Fn,
-    "modf": Func.modfFn,
-    "nextafter": Func.nextafterFn,
-    "perm": Func.permFn,
-    "pow": Func.powFn,
-    "prod": Func.prodFn,
-    "radians": Func.radiansFn,
-    "remainder": Func.remainderFn,
-    "trunc": Func.truncFn,
-    "ulp": Func.ulpFn,
-    "cbrt": Func.cbrtFn,
-    "exp2": Func.exp2Fn,
-    "sumprod": Func.sumprodFn,
-    "fma": Func.fmaFn,
+    "acosh": functions.acoshFn,
+    "asinh": functions.asinhFn,
+    "atan2": functions.atan2Fn,
+    "atanh": functions.atanhFn,
+    "ceil": functions.ceilFn,
+    "comb": functions.combFn,
+    "copysign": functions.copysignFn,
+    "degrees": functions.degreesFn,
+    "dist": functions.distFn,
+    "erf": functions.erfFn,
+    "erfc": functions.erfcFn,
+    "exp": functions.expFn,
+    "expm1": functions.expm1Fn,
+    "fabs": functions.fabsFn,
+    "factorial": functions.factorialFn,
+    "floor": functions.floorFn,
+    "fmod": functions.fmodFn,
+    "frexp": functions.frexpFn,
+    "fsum": functions.fsumFn,
+    "gamma": functions.gammaFn,
+    "gcd": functions.gcdFn,
+    "hypot": functions.hypotFn,
+    "isclose": functions.iscloseFn,
+    "isfinite": functions.isfiniteFn,
+    "isinf": functions.isinfFn,
+    "isnan": functions.isnanFn,
+    "isqrt": functions.isqrtFn,
+    "lcm": functions.lcmFn,
+    "ldexp": functions.ldexpFn,
+    "lgamma": functions.lgammaFn,
+    "log": functions.logFn,
+    "log10": functions.log10Fn,
+    "log1p": functions.log1pFn,
+    "log2": functions.log2Fn,
+    "modf": functions.modfFn,
+    "nextafter": functions.nextafterFn,
+    "perm": functions.permFn,
+    "pow": functions.powFn,
+    "prod": functions.prodFn,
+    "radians": functions.radiansFn,
+    "remainder": functions.remainderFn,
+    "trunc": functions.truncFn,
+    "ulp": functions.ulpFn,
+    "cbrt": functions.cbrtFn,
+    "exp2": functions.exp2Fn,
+    "sumprod": functions.sumprodFn,
+    "fma": functions.fmaFn,
 }
 
 constants = {
@@ -144,14 +201,14 @@ constants = {
     "ten": 10.0,
     "half": 0.5,
     "onePointOne": 1.1,
-    "pi": Func.PI,
-    "e": Func.E,
-    "tau": Func.TAU,
-    "ln1_1": Func.LN1_1,
-    "ln2": Func.LN2,
-    "ln10": Func.LN10,
-    "sqrt2": Func.SQRT2,
-    "sqrt_2pi": Func.SQRT_2PI,
+    "pi": functions.PI,
+    "e": functions.E,
+    "tau": functions.TAU,
+    "ln1_1": functions.LN1_1,
+    "ln2": functions.LN2,
+    "ln10": functions.LN10,
+    "sqrt2": functions.SQRT2,
+    "sqrt_2pi": functions.SQRT_2PI,
     "imag_i": 1j,
 }
 
