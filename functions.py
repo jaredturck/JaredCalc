@@ -1,16 +1,3 @@
-import statistics
-import operator
-import time
-
-def timeit(fn):
-    def wrapper(*args, **kwargs):
-        start = time.time()
-        result = fn(*args, **kwargs)
-        end = time.time()
-        print(f"Time taken: {end - start:.10f} seconds")
-        return result
-
-    return wrapper
 
 class Func:
     def __init__(self):
@@ -529,7 +516,6 @@ class Func:
         ''' Compute natural logarithm of gamma function '''
         return self.lnFn(self.gammaFn(x))
 
-# _normal = statistics.NormalDist()
 functions = Func()
 
 function_list = {
