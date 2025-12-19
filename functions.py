@@ -502,8 +502,7 @@ class Func:
         if x <= 0:
             raise ValueError('X must be positive for gamma function')
         
-        g = 0.7
-        
+        g = 7
         if x < 0.5:
             s = self.sinFn(self.PI * x)
             if s == 0:
