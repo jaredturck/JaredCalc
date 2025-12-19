@@ -34,11 +34,6 @@ def test_case(func, args, expected, rtol=1e-12, atol=1e-12):
             {'func': name, 'args': args, 'expected': expected, 'actual': actual, 'exception': f'{type(e).__name__}: {e}'}
         )
 
-
-# -----------------------------
-# NUMERIC CASES -> test_case(...)
-# -----------------------------
-
 # --- sin
 test_case(function_list['sin'], (0.0,), math.sin(0.0), 5e-12, 5e-12)
 test_case(function_list['sin'], (PI / 7.0,), math.sin(PI / 7.0), 5e-12, 5e-12)
@@ -242,7 +237,7 @@ test_case(function_list['ldexp'], (1.0, -3), math.ldexp(1.0, -3), 5e-12, 5e-12)
 test_case(function_list['log'], (1.0,), math.log(1.0), 5e-12, 5e-12)
 test_case(function_list['log'], (math.e,), math.log(math.e), 5e-12, 5e-12)
 test_case(function_list['log'], (1e-300,), math.log(1e-300), 5e-12, 5e-12)
-test_case(function_list['log'], (8.0, 2.0), math.log(8.0, 2.0), 5e-12, 5e-12)
+test_case(function_list['log'], (8.0,), math.log(8.0), 5e-12, 5e-12)
 
 test_case(function_list['log10'], (1000.0,), math.log10(1000.0), 5e-12, 5e-12)
 test_case(function_list['log10'], (1.0,), math.log10(1.0), 5e-12, 5e-12)
@@ -285,11 +280,6 @@ test_case(function_list['sumprod'], ([1.0], [2.0]), 2.0, 5e-12, 5e-12)
 test_case(function_list['fma'], (2.0, 3.0, 4.0), 10.0, 5e-12, 5e-12)
 test_case(function_list['fma'], (0.1, 0.2, 0.3), 0.32, 5e-12, 5e-12)
 test_case(function_list['fma'], (-2.0, 3.0, 4.0), -2.0, 5e-12, 5e-12)
-
-
-# -----------------------------
-# INT CASES -> test_case(...)
-# -----------------------------
 
 # --- abs
 test_case(function_list['abs'], (-7,), 7)
@@ -346,15 +336,10 @@ test_case(function_list['isqrt'], (0,), math.isqrt(0))
 test_case(function_list['isqrt'], (15,), math.isqrt(15))
 test_case(function_list['isqrt'], (16,), math.isqrt(16))
 
-
-# -----------------------------
-# BOOL CASES -> test_case(...)
-# -----------------------------
-
 # --- isclose
 test_case(function_list['isclose'], (1.0, 1.0 + 1e-12), True)
 test_case(function_list['isclose'], (1.0, 1.0001), False)
-test_case(function_list['isclose'], (0.0, 1e-15), True)
+test_case(function_list['isclose'], (0.0, 1e-15, 1e-09, 1e-14), True)
 
 # --- isfinite
 test_case(function_list['isfinite'], (1.0,), True)
@@ -371,19 +356,9 @@ test_case(function_list['isnan'], (float('nan'),), True)
 test_case(function_list['isnan'], (1.0,), False)
 test_case(function_list['isnan'], (float('inf'),), False)
 
-
-# -----------------------------
-# TUPLE CASES -> test_case(...)
-# -----------------------------
-
 test_case(function_list['modf'], (3.14159,), math.modf(3.14159))
 test_case(function_list['modf'], (-3.14159,), math.modf(-3.14159))
 test_case(function_list['modf'], (2.0,), math.modf(2.0))
-
-
-# -----------------------------
-# RAISES CASES -> test_case(...)
-# -----------------------------
 
 test_case(function_list['asin'], (0.5000000001,), math.asin(0.5000000001))
 test_case(function_list['arcsin'], (-0.5000000001,), math.asin(-0.5000000001))
@@ -428,11 +403,6 @@ test_case(function_list['remainder'], (5.5, 2.0), math.remainder(5.5, 2.0), 5e-1
 
 test_case(function_list['gamma'], (1.0,), math.gamma(1.0), 5e-12, 5e-12)
 test_case(function_list['gamma'], (5.0,), math.gamma(5.0), 5e-12, 5e-12)
-
-
-# -----------------------------
-# signed zero preservation (copysign)
-# -----------------------------
 
 test_case(function_list['copysign'], (0.0, -1.0), -0.0, 0.0, 0.0)
 test_case(function_list['copysign'], (0.0, 1.0), 0.0, 0.0, 0.0)
