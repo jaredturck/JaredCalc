@@ -351,7 +351,7 @@ class Func:
             return -1
         return 0
     
-    def atan2Fn(self, x, y):
+    def atan2Fn(self, y, x):
         ''' Compute arctangent two '''
 
         if x > 0:
@@ -530,15 +530,11 @@ class Func:
         ''' Compute natural logarithm of gamma function '''
         return self.lnFn(self.gammaFn(x))
 
-_normal = statistics.NormalDist()
+# _normal = statistics.NormalDist()
 functions = Func()
 
 function_list = {
     "abs": abs,
-    "arg": functions.phase,
-    "conj": operator.methodcaller("conjugate"),
-    "Im": operator.attrgetter("imag"),
-    "Re": operator.attrgetter("real"),
     "sgn": functions.sgnFn,
     "sin": functions.sinFn,
     "cosec": functions.cosecFn,
@@ -559,9 +555,9 @@ function_list = {
     "sqrt": functions.sqrtFn,
     "ln": functions.lnFn,
     "lg": functions.lgFn,
-    "normcdf": _normal.cdf,
-    "normpdf": _normal.pdf,
-    "invnorm": _normal.inv_cdf,
+    # "normcdf": _normal.cdf,
+    # "normpdf": _normal.pdf,
+    # "invnorm": _normal.inv_cdf,
     "acosh": functions.acoshFn,
     "asinh": functions.asinhFn,
     "atan2": functions.atan2Fn,
