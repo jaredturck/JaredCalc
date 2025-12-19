@@ -219,5 +219,4 @@ if __name__ == '__main__':
     while True:
         expression = input('> ')
         t = Parse(expression)
-        print(t.ast)
         print(t)
